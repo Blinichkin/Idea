@@ -10,9 +10,9 @@ import java.util.List;
 @Service
 public class IdeaService implements IIdeaService {
 
-	@Autowired
-	private IIdeaRepository repository;
+	private final IIdeaRepository repository;
 	
+	@Autowired
 	public IdeaService(IIdeaRepository repository) {
 		this.repository = repository;
 	}
