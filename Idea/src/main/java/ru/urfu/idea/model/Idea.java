@@ -29,7 +29,7 @@ public class Idea implements Serializable {
 	private Contact contact;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "status_id", nullable = false)
+	@JoinColumn(name = "status_id")
 	private IdeaStatus status;
 	
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
