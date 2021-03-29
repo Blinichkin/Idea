@@ -1,36 +1,34 @@
 package ru.urfu.idea.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.urfu.idea.model.Role;
+import ru.urfu.idea.request.RoleRequest;
 import ru.urfu.idea.service.IRoleService;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @RequestMapping("/api/v1/roles")
 public class RoleController {
 	
-	@Autowired
 	private final IRoleService service;
 	
-	public RoleController(IRoleService service) {
-		this.service = service;
-	}
-	
 	@PostMapping
-	public ResponseEntity<Role> create(@RequestBody @Valid final Role role)  {
-		service.create(role);
-		return new ResponseEntity<>(role, HttpStatus.CREATED);
+	public ResponseEntity<Role> create(@RequestBody @Valid final RoleRequest roleRequest)  {
+		Role createdRole = service.create(roleRequest);
+		return new ResponseEntity<>(createdRole, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Role> update(@PathVariable("id") final long id,
-									   @RequestBody @Valid final Role role) {
-		Role updatedRole = service.update(id, role);
+									   @RequestBody @Valid final RoleRequest roleRequest) {
+		Role updatedRole = service.update(id, roleRequest);
 		return new ResponseEntity<>(updatedRole, HttpStatus.OK);
 	}
 	

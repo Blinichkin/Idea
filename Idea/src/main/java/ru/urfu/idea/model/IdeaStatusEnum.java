@@ -1,7 +1,7 @@
 package ru.urfu.idea.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;;
+import lombok.Getter;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 public enum IdeaStatusEnum implements Serializable {
 	
-	NEW("Новая"),
+	NEW("NEW"),
 	MODERATION("Модерация"),
 	VOTING_STUDENT("Голосование (студенческий состав)"),
 	VOTING_EXPERT("Голосование (экспертный состав)"),

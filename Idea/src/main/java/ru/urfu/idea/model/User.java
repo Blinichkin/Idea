@@ -25,6 +25,14 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String password;
 	
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
+	
+	@Column(name = "last_name", nullable = false)
+	private String lastName;
+	
+	private String patronymic;
+	
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;

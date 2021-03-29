@@ -1,30 +1,28 @@
 package ru.urfu.idea.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.urfu.idea.model.User;
+import ru.urfu.idea.request.UserRequest;
 import ru.urfu.idea.service.IUserService;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 	
-	@Autowired
 	private final IUserService service;
 	
-	public UserController(IUserService service) {
-		this.service = service;
-	}
-	
 	@PostMapping
-	public ResponseEntity<User> create(@RequestBody @Valid final User user)  {
-		service.create(user);
-		return new ResponseEntity<>(user, HttpStatus.CREATED);
+	public ResponseEntity<User> register(@RequestBody @Valid final UserRequest userRequest) {
+		User createdUser = service.register(userRequest);
+		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")

@@ -1,30 +1,28 @@
 package ru.urfu.idea.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.urfu.idea.model.Idea;
+import ru.urfu.idea.request.IdeaRequest;
 import ru.urfu.idea.service.IIdeaService;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @RequestMapping("/api/v1/ideas")
 public class IdeaController {
 	
-	@Autowired
 	private final IIdeaService service;
 	
-	public IdeaController(IIdeaService service) {
-		this.service = service;
-	}
-	
 	@PostMapping
-	public ResponseEntity<Idea> create(@RequestBody @Valid final Idea idea)  {
-		service.create(idea);
-		return new ResponseEntity<>(idea, HttpStatus.CREATED);
+	public ResponseEntity<Idea> create(@RequestBody @Valid final IdeaRequest ideaRequest)  {
+		Idea createdIdea = service.create(1, ideaRequest);
+		return new ResponseEntity<>(createdIdea, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")

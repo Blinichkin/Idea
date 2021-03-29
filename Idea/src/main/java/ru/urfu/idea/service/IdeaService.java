@@ -1,25 +1,38 @@
 package ru.urfu.idea.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.idea.model.Idea;
+import ru.urfu.idea.mapper.IIdeaMapper;
+import ru.urfu.idea.model.*;
 import ru.urfu.idea.repository.IIdeaRepository;
+import ru.urfu.idea.repository.IIdeaStatusRepository;
+import ru.urfu.idea.repository.IUserRepository;
+import ru.urfu.idea.request.IdeaRequest;
 
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
 public class IdeaService implements IIdeaService {
 
-	private final IIdeaRepository repository;
+	private final IIdeaRepository ideaRepository;
+	private final IIdeaStatusRepository statusRepository;
+	private final IUserRepository userRepository;
 	
-	@Autowired
-	public IdeaService(IIdeaRepository repository) {
-		this.repository = repository;
-	}
+	private final IIdeaMapper mapper;
 	
 	@Override
-	public Idea create(Idea idea) {
-		return repository.save(idea);
+	public Idea create(long userId, IdeaRequest ideaRequest) {
+		Idea idea = mapper.requestToModel(ideaRequest);
+		
+		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.NEW.getName()).get(0);
+		User author = userRepository.findById(userId).get();
+		
+		idea.setStatus(status);
+		idea.setAuthor(author);
+		
+		return ideaRepository.save(idea);
 	}
 	
 	@Override
@@ -29,22 +42,22 @@ public class IdeaService implements IIdeaService {
 		currentIdea.setName(idea.getName());
 		currentIdea.setText(idea.getText());
 		
-		return repository.saveAndFlush(currentIdea);
+		return ideaRepository.saveAndFlush(currentIdea);
 	}
 	
 	@Override
 	public List<Idea> findAll() {
-		return repository.findAll();
+		return ideaRepository.findAll();
 	}
 	
 	@Override
 	public Idea findById(long id) {
-		return repository.findById(id).get();
+		return ideaRepository.findById(id).get();
 	}
 	
 	@Override
 	public void delete(long id) {
-		repository.deleteById(id);
+		ideaRepository.deleteById(id);
 	}
 	
 }
