@@ -7,13 +7,11 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public enum RoleEnum implements Serializable {
-
-	READ("USER"),
-	EXPERT("EXPERT"),
-	MODERATOR("MODERATOR"),
-	ADMIN("ADMIN");
+public enum EncryptionAlgorithm implements Serializable {
+	
+	BCRYPT("BCRYPT"),
+	SCRYPT("SCRYPT");
 	
 	private final String name;
-
+	
 }

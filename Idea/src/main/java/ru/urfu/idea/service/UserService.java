@@ -2,12 +2,11 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.mapper.IUserMapper;
-import ru.urfu.idea.model.Role;
-import ru.urfu.idea.model.RoleEnum;
 import ru.urfu.idea.model.User;
-import ru.urfu.idea.repository.IRoleRepository;
 import ru.urfu.idea.repository.IUserRepository;
 import ru.urfu.idea.request.UserRequest;
 
@@ -15,18 +14,14 @@ import java.util.List;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
 	
 	private final IUserRepository userRepository;
-	private final IRoleRepository roleRepository;
 	private final IUserMapper mapper;
 	
 	@Override
 	public User register(UserRequest userRequest) {
 		User user = mapper.requestToModel(userRequest);
-		
-		Role role = roleRepository.findByName(RoleEnum.USER.getName()).get(0);
-		user.setRole(role);
 		
 		return userRepository.save(user);
 	}
@@ -35,12 +30,12 @@ public class UserService implements IUserService {
 	public User update(long id, User user) {
 		User currentUser = findById(id);
 		
-		currentUser.setLogin(user.getLogin());
+		currentUser.setUsername(user.getUsername());
 		currentUser.setPassword(user.getPassword());
 		currentUser.setFirstName(user.getFirstName());
 		currentUser.setLastName(user.getLastName());
 		currentUser.setPatronymic(user.getPatronymic());
-		currentUser.setRole(user.getRole());
+		currentUser.setRoles(user.getRoles());
 		
 		return userRepository.saveAndFlush(currentUser);
 	}
@@ -58,6 +53,11 @@ public class UserService implements IUserService {
 	@Override
 	public void delete(long id) {
 		userRepository.deleteById(id);
+	}
+	
+	@Override
+	public User loadUserByUsername(String s) throws UsernameNotFoundException {
+		return userRepository.findByUsername(s).orElseThrow();
 	}
 	
 }

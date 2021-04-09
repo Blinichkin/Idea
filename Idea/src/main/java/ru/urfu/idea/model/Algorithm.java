@@ -11,8 +11,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "idea_statuses")
-public class IdeaStatus implements Serializable {
+@Table(name = "algorithms")
+public class Algorithm implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,25 +21,25 @@ public class IdeaStatus implements Serializable {
 	@Column(nullable = false)
 	private String name;
 	
-	public IdeaStatusEnum getName() {
+	public EncryptionAlgorithm getName() {
 		if (name == null) {
 			return null;
 		}
 		
-		for (IdeaStatusEnum status: IdeaStatusEnum.values()) {
-			if (name.equals(status.getName()))
-				return status;
+		for (EncryptionAlgorithm algorithm: EncryptionAlgorithm.values()) {
+			if (name.equals(algorithm.getName()))
+				return algorithm;
 		}
 		
 		throw new IllegalArgumentException("No such value");
 	}
 	
-	public void setName(IdeaStatusEnum ideaStatusEnum) {
-		if (ideaStatusEnum == null) {
+	public void setName(EncryptionAlgorithm algorithm) {
+		if (algorithm == null) {
 			name = null;
 		}
 		
-		name = ideaStatusEnum.getName();
+		name = algorithm.getName();
 	}
 	
 }
