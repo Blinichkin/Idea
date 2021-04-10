@@ -14,6 +14,6 @@ public interface IVotingService {
 	
 	Voting findById(long id);
 	
-	void delete(long id);
+	Voting delete(long id);
 	
 }

@@ -17,7 +17,7 @@ public class VoteService implements IVoteService {
 	private final IVotingRepository votingRepository;
 	
 	@Override
-	public Vote create(long votingId, Vote vote) {
+	public Vote create(final long votingId, final Vote vote) {
 		Voting voting = votingRepository.findById(votingId)
 				.orElseThrow(() -> new RuntimeException("Voting not found"));
 		
@@ -29,7 +29,7 @@ public class VoteService implements IVoteService {
 	}
 	
 	@Override
-	public Vote update(long id, Vote vote) {
+	public Vote update(final long id, final Vote vote) {
 		Vote currentVote = voteRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Vote not found"));
 		
@@ -44,17 +44,18 @@ public class VoteService implements IVoteService {
 	}
 	
 	@Override
-	public Vote findById(long id) {
-		return voteRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Vote not found"));
+	public Vote findById(final long id) {
+		return voteRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		Vote vote = voteRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Vote not found"));
+	public Vote delete(final long id) {
+		Vote vote = voteRepository.findById(id).orElse(null);
+		if (vote != null) {
+			voteRepository.deleteById(vote.getId());
+		}
 		
-		voteRepository.deleteById(vote.getId());
+		return vote;
 	}
 	
 }

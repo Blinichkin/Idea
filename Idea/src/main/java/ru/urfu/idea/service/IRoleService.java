@@ -1,20 +1,19 @@
 package ru.urfu.idea.service;
 
 import ru.urfu.idea.entity.Role;
-import ru.urfu.idea.mapper.request.RoleRequest;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IRoleService {
 	
-	public Role create(RoleRequest roleRequest);
+	Role create(Role role);
 	
-	public Role update(long id, RoleRequest roleRequest);
+	Role update(long id, Role role);
 	
-	public List<Role> findAll();
+	Collection<Role> findAll();
 	
-	public Role findById(long id);
+	Role findById(long id);
 	
-	public void delete(long id);
+	Role delete(long id);
 	
 }

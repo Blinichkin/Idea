@@ -20,6 +20,8 @@ public class VotingResponse implements Serializable {
 	
 	private LocalDateTime createdDate;
 	
+	private UserResponse createdBy;
+	
 	private Collection<VoteResponse> votes;
 	
 }

@@ -15,6 +15,6 @@ public interface IAttachmentService {
 	
 	Attachment findById(long id);
 	
-	void delete(long id);
+	Attachment delete(long id);
 	
 }

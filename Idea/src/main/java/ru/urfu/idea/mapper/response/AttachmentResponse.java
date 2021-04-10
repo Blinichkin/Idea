@@ -10,14 +10,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class VoteResponse implements Serializable {
-	
+public class AttachmentResponse implements Serializable {
+
 	private long id;
-	
-	private byte optionAnswer;
-	
+
+	private String name;
+
 	private LocalDateTime createdDate;
-	
-	private UserResponse createdBy;
-	
+
 }

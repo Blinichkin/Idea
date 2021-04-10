@@ -3,48 +3,53 @@ package ru.urfu.idea.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.idea.mapper.IIdeaStatusMapper;
 import ru.urfu.idea.entity.IdeaStatus;
 import ru.urfu.idea.repository.IIdeaStatusRepository;
 import ru.urfu.idea.mapper.request.IdeaStatusRequest;
 
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
 public class IdeaStatusService implements IIdeaStatusService {
 	
-	private final IIdeaStatusRepository repository;
-	private final IIdeaStatusMapper mapper;
+	private final IIdeaStatusRepository statusRepository;
 	
 	@Override
-	public IdeaStatus create(IdeaStatusRequest statusRequest) {
-		IdeaStatus status = mapper.requestToModel(statusRequest);
-		return repository.save(status);
+	public IdeaStatus create(final IdeaStatus status) {
+		IdeaStatus newStatus = new IdeaStatus();
+		newStatus.setName(status.getName());
+		
+		return statusRepository.save(newStatus);
 	}
 	
 	@Override
-	public IdeaStatus update(long id, IdeaStatusRequest statusRequest) {
+	public IdeaStatus update(final long id, final IdeaStatus status) {
 		IdeaStatus currentStatus = findById(id);
+		currentStatus.setName(status.getName());
 		
-		currentStatus.setName(statusRequest.getName());
+		return statusRepository.saveAndFlush(currentStatus);
+	}
+	
+	@Override
+	public Collection<IdeaStatus> findAll() {
+		return statusRepository.findAll();
+	}
+	
+	@Override
+	public IdeaStatus findById(final long id) {
+		return statusRepository.findById(id).orElse(null);
+	}
+	
+	@Override
+	public IdeaStatus delete(long id) {
+		IdeaStatus status = statusRepository.findById(id).orElse(null);
+		if (status != null) {
+			statusRepository.deleteById(id);
+		}
 		
-		return repository.saveAndFlush(currentStatus);
-	}
-	
-	@Override
-	public List<IdeaStatus> findAll() {
-		return repository.findAll();
-	}
-	
-	@Override
-	public IdeaStatus findById(long id) {
-		return repository.findById(id).get();
-	}
-	
-	@Override
-	public void delete(long id) {
-		repository.deleteById(id);
+		return status;
 	}
 	
 }

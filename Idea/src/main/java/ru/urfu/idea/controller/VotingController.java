@@ -54,11 +54,9 @@ public class VotingController {
 	@GetMapping("/{id}")
 	public ResponseEntity<VotingResponse> getById(@PathVariable("id") final long id) {
 		Voting voting = votingService.findById(id);
-		
 		if (voting == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
 		VotingResponse votingResponse = votingMapper.modelToResponse(voting);
 		
 		return new ResponseEntity<>(votingResponse, HttpStatus.OK);
@@ -66,9 +64,14 @@ public class VotingController {
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('MODER', 'ADMIN')")
-	public ResponseEntity<Voting> delete(@PathVariable("id") final long id) {
-		votingService.delete(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<VotingResponse> delete(@PathVariable("id") final long id) {
+		Voting voting = votingService.delete(id);
+		if (voting == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		VotingResponse votingResponse = votingMapper.modelToResponse(voting);
+		
+		return new ResponseEntity<>(votingResponse, HttpStatus.OK);
 	}
 	
 }

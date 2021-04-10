@@ -50,17 +50,18 @@ public class IdeaService implements IIdeaService {
 	}
 	
 	@Override
-	public Idea findById(long id) {
-		return ideaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+	public Idea findById(final long id) {
+		return ideaRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		Idea idea = ideaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+	public Idea delete(final long id) {
+		Idea idea = ideaRepository.findById(id).orElse(null);
+		if (idea != null) {
+			ideaRepository.deleteById(idea.getId());
+		}
 		
-		ideaRepository.deleteById(idea.getId());
+		return idea;
 	}
 	
 }

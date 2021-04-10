@@ -3,49 +3,55 @@ package ru.urfu.idea.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.idea.mapper.IContactMapper;
 import ru.urfu.idea.entity.Contact;
 import ru.urfu.idea.repository.IContactRepository;
-import ru.urfu.idea.mapper.request.ContactRequest;
 
-import java.util.List;
+import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
 public class ContactService implements IContactService {
 	
-	private final IContactRepository repository;
-	private final IContactMapper mapper;
+	private final IContactRepository contactRepository;
 	
 	@Override
-	public Contact create(ContactRequest contactRequest) {
-		Contact contact = mapper.requestToModel(contactRequest);
-		return repository.save(contact);
-	}
-	
-	@Override
-	public Contact update(long id, ContactRequest contactRequest) {
-		Contact currentContact = findById(id);
+	public Contact create(final Contact contact) {
+		Contact newContact = new Contact();
+		newContact.setEmail(contact.getEmail());
+		newContact.setPhoneNumber(contact.getPhoneNumber());
 		
-		currentContact.setPhoneNumber(contactRequest.getPhoneNumber());
-		currentContact.setEmail(contactRequest.getEmail());
+		return contactRepository.save(newContact);
+	}
+	
+	@Override
+	public Contact update(final long id, final Contact contact) {
+		Contact currentContact = contactRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Contact not found"));
 		
-		return repository.saveAndFlush(currentContact);
+		currentContact.setEmail(contact.getEmail());
+		currentContact.setPhoneNumber(contact.getPhoneNumber());
+		
+		return contactRepository.saveAndFlush(currentContact);
 	}
 	
 	@Override
-	public List<Contact> findAll() {
-		return repository.findAll();
+	public Collection<Contact> findAll() {
+		return contactRepository.findAll();
 	}
 	
 	@Override
-	public Contact findById(long id) {
-		return repository.findById(id).get();
+	public Contact findById(final long id) {
+		return contactRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		repository.deleteById(id);
+	public Contact delete(final long id) {
+		Contact contact = contactRepository.findById(id).orElse(null);
+		if (contact != null) {
+			contactRepository.deleteById(id);
+		}
+		
+		return contact;
 	}
 	
 }

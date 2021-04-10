@@ -1,20 +1,19 @@
 package ru.urfu.idea.service;
 
 import ru.urfu.idea.entity.Contact;
-import ru.urfu.idea.mapper.request.ContactRequest;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IContactService {
 	
-	public Contact create(ContactRequest contactRequest);
+	Contact create(Contact contact);
 	
-	public Contact update(long id, ContactRequest contactRequest);
+	Contact update(long id, Contact contact);
 	
-	public List<Contact> findAll();
+	Collection<Contact> findAll();
 	
-	public Contact findById(long id);
+	Contact findById(long id);
 	
-	public void delete(long id);
+	Contact delete(long id);
 	
 }

@@ -5,21 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.urfu.idea.entity.Attachment;
 import ru.urfu.idea.entity.Idea;
-import ru.urfu.idea.entity.User;
 import ru.urfu.idea.mapper.IIdeaMapper;
 import ru.urfu.idea.mapper.request.IdeaRequest;
 import ru.urfu.idea.mapper.response.IdeaResponse;
-import ru.urfu.idea.security.UserPrincipal;
 import ru.urfu.idea.service.IAttachmentService;
 import ru.urfu.idea.service.IIdeaService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -46,9 +41,11 @@ public class IdeaController {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('USER')")
 	//@PostAuthorize("hasRole('ADMIN') || " + "returnObject.user.username == authentication.name")
 	public ResponseEntity<IdeaResponse> update(@PathVariable("id") final long id,
-											   @RequestBody @Validated final Idea idea) {
+											   @RequestBody @Validated final IdeaRequest ideaRequest) {
+		Idea idea = ideaMapper.requestToModel(ideaRequest);
 		Idea updatedIdea = ideaService.update(id, idea);
 		IdeaResponse ideaResponse = ideaMapper.modelToResponse(updatedIdea);
 		
@@ -66,7 +63,6 @@ public class IdeaController {
 	@GetMapping("/{id}")
 	public ResponseEntity<IdeaResponse> getById(@PathVariable("id") final long id) {
 		Idea idea = ideaService.findById(id);
-		
 		if (idea == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -77,15 +73,14 @@ public class IdeaController {
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Idea> delete(@PathVariable("id") final long id) {
-		Idea idea = ideaService.findById(id);
-		
+	public ResponseEntity<IdeaResponse> delete(@PathVariable("id") final long id) {
+		Idea idea = ideaService.delete(id);
 		if (idea == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
 		
-		ideaService.delete(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
 	}
 
 }

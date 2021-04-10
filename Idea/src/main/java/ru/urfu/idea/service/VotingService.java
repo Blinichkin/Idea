@@ -49,17 +49,18 @@ public class VotingService implements IVotingService {
 	}
 	
 	@Override
-	public Voting findById(long id) {
-		return votingRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Voting not found"));
+	public Voting findById(final long id) {
+		return votingRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		Voting voting = votingRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Voting not found"));
+	public Voting delete(final long id) {
+		Voting voting = votingRepository.findById(id).orElse(null);
+		if (voting != null) {
+			votingRepository.deleteById(voting.getId());
+		}
 		
-		votingRepository.deleteById(voting.getId());
+		return voting;
 	}
 	
 }

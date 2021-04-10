@@ -14,6 +14,6 @@ public interface IIdeaService {
 	
 	Idea findById(long id);
 	
-	void delete(long id);
+	Idea delete(long id);
 
 }

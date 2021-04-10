@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Role;
 import ru.urfu.idea.entity.RoleEnum;
 import ru.urfu.idea.entity.User;
+import ru.urfu.idea.mapper.request.UserProfileRequest;
 import ru.urfu.idea.repository.IRoleRepository;
 import ru.urfu.idea.repository.IUserRepository;
 
@@ -22,17 +23,17 @@ public class UserService implements IUserService {
 	private final IRoleRepository roleRepository;
 	
 	@Override
-	public User create(User userRegister) {
-		if (findByLogin(userRegister.getLogin()) != null) {
+	public User create(final User user) {
+		if (findByLogin(user.getLogin()) != null) {
 			throw new RuntimeException("Login already exists");
 		}
 		
 		User newUser = new User();
-		newUser.setLogin(userRegister.getLogin());
-		newUser.setPassword(passwordEncoder.encode(userRegister.getPassword()));
-		newUser.setLastName(userRegister.getLastName());
-		newUser.setFirstName(userRegister.getFirstName());
-		newUser.setPatronymic(userRegister.getPatronymic());
+		newUser.setLogin(user.getLogin());
+		newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+		newUser.setLastName(user.getLastName());
+		newUser.setFirstName(user.getFirstName());
+		newUser.setPatronymic(user.getPatronymic());
 		newUser.setRoles(createRoles());
 		
 		return userRepository.save(newUser);
@@ -40,17 +41,19 @@ public class UserService implements IUserService {
 	
 	private Collection<Role> createRoles() {
 		Collection<Role> roles = new ArrayList<>();
-		
 		Role role = roleRepository.findByName(RoleEnum.USER.getName())
 				.orElseThrow(() -> new RuntimeException("Role not found"));
-		
 		roles.add(role);
+		
+		Role role2 = roleRepository.findByName(RoleEnum.ADMIN.getName())
+				.orElseThrow(() -> new RuntimeException("Role not found"));
+		roles.add(role2);
 		
 		return roles;
 	}
 	
 	@Override
-	public User update(long id, User user) {
+	public User update(final long id, final UserProfileRequest user) {
 		User currentUser = userRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("User not found"));
 		
@@ -67,18 +70,23 @@ public class UserService implements IUserService {
 	}
 	
 	@Override
-	public User findById(long id) {
+	public User findById(final long id) {
 		return userRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public User findByLogin(String login) {
+	public User findByLogin(final String login) {
 		return userRepository.findByLogin(login).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		userRepository.deleteById(id);
+	public User delete(final long id) {
+		User user = userRepository.findById(id).orElse(null);
+		if (user != null) {
+			userRepository.deleteById(user.getId());
+		}
+		
+		return user;
 	}
 	
 }

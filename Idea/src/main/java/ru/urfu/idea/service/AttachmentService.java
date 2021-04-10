@@ -22,7 +22,7 @@ public class AttachmentService implements IAttachmentService {
 	private final IIdeaRepository ideaRepository;
 	
 	@Override
-	public Attachment create(long ideaId, MultipartFile multipartFile) {
+	public Attachment create(final long ideaId, final MultipartFile multipartFile) {
 		String filename = multipartFile.getOriginalFilename();
 		Idea idea = ideaRepository.findById(ideaId)
 				.orElseThrow(() -> new RuntimeException("Idea not found"));
@@ -37,7 +37,7 @@ public class AttachmentService implements IAttachmentService {
 		return attachmentRepository.save(attachment);
 	}
 	
-	private void checkDirectories(long ideaId) {
+	private void checkDirectories(final long ideaId) {
 		try {
 			if (!Files.exists(Paths.get("files"))) {
 				Files.createDirectory(Paths.get("files"));
@@ -51,7 +51,7 @@ public class AttachmentService implements IAttachmentService {
 		}
 	}
 	
-	private void createFile(MultipartFile multipartFile, String path) {
+	private void createFile(final MultipartFile multipartFile, final String path) {
 		try {
 			Files.copy(multipartFile.getInputStream(), Paths.get(path));
 		} catch (IOException e) {
@@ -60,23 +60,37 @@ public class AttachmentService implements IAttachmentService {
 	}
 	
 	@Override
-	public Attachment update(long id, Attachment attachment) {
+	public Attachment update(final long id, final Attachment attachment) {
 		return null;
 	}
 	
 	@Override
 	public Collection<Attachment> findAll() {
-		return null;
+		return attachmentRepository.findAll();
 	}
 	
 	@Override
 	public Attachment findById(long id) {
-		return null;
+		return attachmentRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
+	public Attachment delete(long id) {
+		Attachment attachment = attachmentRepository.findById(id).orElse(null);
+		if (attachment != null) {
+			attachmentRepository.deleteById(id);
+			deleteFile("files/" + attachment.getIdea().getId() + "/" + attachment.getName());
+		}
+		
+		return attachment;
+	}
 	
+	private void deleteFile(String path) {
+		try {
+			Files.delete(Paths.get(path));
+		} catch (IOException e) {
+			throw new RuntimeException("FAIL! -> message = " + e.getMessage());
+		}
 	}
 	
 }

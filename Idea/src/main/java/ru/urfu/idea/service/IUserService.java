@@ -1,6 +1,7 @@
 package ru.urfu.idea.service;
 
 import ru.urfu.idea.entity.User;
+import ru.urfu.idea.mapper.request.UserProfileRequest;
 
 import java.util.Collection;
 
@@ -8,7 +9,7 @@ public interface IUserService {
 	
 	User create(User user);
 	
-	User update(long id, User user);
+	User update(long id, UserProfileRequest userProfileRequest);
 	
 	Collection<User> findAll();
 	
@@ -16,6 +17,6 @@ public interface IUserService {
 	
 	User findByLogin(String login);
 	
-	void delete(long id);
+	User delete(long id);
 	
 }
