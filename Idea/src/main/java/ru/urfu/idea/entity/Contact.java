@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +21,7 @@ public class Contact implements Serializable {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 	
+	@Column(name = "email")
 	private String email;
 	
 }

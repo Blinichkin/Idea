@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,17 +18,8 @@ public class Role  implements GrantedAuthority {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(nullable = false)
+	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(nullable = false)
-	private String permission;
-	
-	@ManyToMany
-	@JoinTable(name = "user_role",
-			joinColumns = @JoinColumn(name = "role_id"),
-			inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private Collection<User> users;
 	
 	public RoleEnum getName() {
 		if (name == null) {
@@ -52,4 +42,5 @@ public class Role  implements GrantedAuthority {
 	public String getAuthority() {
 		return name;
 	}
+	
 }

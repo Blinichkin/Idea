@@ -4,60 +4,79 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.urfu.idea.model.Idea;
-import ru.urfu.idea.request.IdeaRequest;
+import ru.urfu.idea.entity.Idea;
+import ru.urfu.idea.entity.User;
+import ru.urfu.idea.mapper.IIdeaMapper;
+import ru.urfu.idea.mapper.request.IdeaRequest;
+import ru.urfu.idea.mapper.response.IdeaResponse;
+import ru.urfu.idea.security.UserPrincipal;
 import ru.urfu.idea.service.IIdeaService;
 
-import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @RequestMapping("/api/v1/ideas")
 public class IdeaController {
 	
-	private final IIdeaService service;
+	private final IIdeaService ideaService;
+	private final IIdeaMapper ideaMapper;
 	
 	@PostMapping
-	public ResponseEntity<Idea> create(@RequestBody @Valid final IdeaRequest ideaRequest)  {
-		Idea createdIdea = service.create(1, ideaRequest);
-		return new ResponseEntity<>(createdIdea, HttpStatus.CREATED);
+	@PreAuthorize("hasAuthority('USER')")
+	public ResponseEntity<IdeaResponse> create(@AuthenticationPrincipal final UserPrincipal userPrincipal,
+											   @RequestBody @Validated final IdeaRequest ideaRequest) {
+		Idea idea = ideaMapper.requestToModel(ideaRequest);
+		Idea createdIdea = ideaService.create(idea);
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(createdIdea);
+		
+		return new ResponseEntity<>(ideaResponse, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Idea> update(@PathVariable("id") final long id,
-									   @RequestBody @Valid final Idea idea) {
-		Idea updatedIdea = service.update(id, idea);
-		return new ResponseEntity<>(updatedIdea, HttpStatus.OK);
+	//@PostAuthorize("hasRole('ADMIN') || " + "returnObject.user.username == authentication.name")
+	public ResponseEntity<IdeaResponse> update(@PathVariable("id") final long id,
+									   @RequestBody @Validated final Idea idea) {
+		Idea updatedIdea = ideaService.update(id, idea);
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(updatedIdea);
+		
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Idea>> getAll() {
-		List<Idea> ideas = service.findAll();
-		return new ResponseEntity<>(ideas, HttpStatus.OK);
+	public ResponseEntity<Collection<IdeaResponse>> getAll() {
+		Collection<Idea> ideas = ideaService.findAll();
+		Collection<IdeaResponse> ideaResponses = ideaMapper.modelToResponse(ideas);
+		
+		return new ResponseEntity<>(ideaResponses, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Idea> getById(@PathVariable("id") final long id) {
-		Idea idea = service.findById(id);
+	public ResponseEntity<IdeaResponse> getById(@PathVariable("id") final long id) {
+		Idea idea = ideaService.findById(id);
 		
 		if (idea == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
 		
-		return new ResponseEntity<>(idea, HttpStatus.OK);
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Idea> delete(@PathVariable("id") final long id) {
-		Idea idea = service.findById(id);
+		Idea idea = ideaService.findById(id);
 		
 		if (idea == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		service.delete(id);
+		ideaService.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

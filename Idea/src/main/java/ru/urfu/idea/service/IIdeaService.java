@@ -1,17 +1,16 @@
 package ru.urfu.idea.service;
 
-import ru.urfu.idea.model.Idea;
-import ru.urfu.idea.request.IdeaRequest;
+import ru.urfu.idea.entity.Idea;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IIdeaService {
 	
-	public Idea create(long userId, IdeaRequest ideaRequest);
+	public Idea create(Idea idea);
 	
 	public Idea update(long id, Idea idea);
 	
-	public List<Idea> findAll();
+	public Collection<Idea> findAll();
 	
 	public Idea findById(long id);
 	

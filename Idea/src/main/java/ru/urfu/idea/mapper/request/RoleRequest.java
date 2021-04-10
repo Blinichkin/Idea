@@ -1,9 +1,9 @@
-package ru.urfu.idea.request;
+package ru.urfu.idea.mapper.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.urfu.idea.model.RoleEnum;
+import ru.urfu.idea.entity.RoleEnum;
 
 import java.io.Serializable;
 

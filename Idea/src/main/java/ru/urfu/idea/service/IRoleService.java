@@ -1,7 +1,7 @@
 package ru.urfu.idea.service;
 
-import ru.urfu.idea.model.Role;
-import ru.urfu.idea.request.RoleRequest;
+import ru.urfu.idea.entity.Role;
+import ru.urfu.idea.mapper.request.RoleRequest;
 
 import java.util.List;
 

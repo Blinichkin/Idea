@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +7,10 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public enum EncryptionAlgorithm implements Serializable {
+public enum VotingStatusEnum implements Serializable {
 	
-	BCRYPT("BCRYPT"),
-	SCRYPT("SCRYPT");
+	ACTIVE("ACTIVE"),
+	COMPLETED("COMPLETED");
 	
 	private final String name;
 	

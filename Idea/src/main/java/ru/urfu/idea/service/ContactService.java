@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.mapper.IContactMapper;
-import ru.urfu.idea.model.Contact;
+import ru.urfu.idea.entity.Contact;
 import ru.urfu.idea.repository.IContactRepository;
-import ru.urfu.idea.request.ContactRequest;
+import ru.urfu.idea.mapper.request.ContactRequest;
 
 import java.util.List;
 

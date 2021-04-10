@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.mapper.IRoleMapper;
-import ru.urfu.idea.model.Role;
+import ru.urfu.idea.entity.Role;
 import ru.urfu.idea.repository.IRoleRepository;
-import ru.urfu.idea.request.RoleRequest;
+import ru.urfu.idea.mapper.request.RoleRequest;
 
 import java.util.List;
 
@@ -28,7 +28,6 @@ public class RoleService implements IRoleService {
 		Role currentRole = findById(id);
 		
 		currentRole.setName(roleRequest.getName());
-		currentRole.setPermission(roleRequest.getPermission());
 		
 		return repository.saveAndFlush(currentRole);
 	}

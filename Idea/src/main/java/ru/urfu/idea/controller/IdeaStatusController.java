@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.urfu.idea.model.IdeaStatus;
-import ru.urfu.idea.request.IdeaStatusRequest;
+import ru.urfu.idea.entity.IdeaStatus;
+import ru.urfu.idea.mapper.request.IdeaStatusRequest;
 import ru.urfu.idea.service.IIdeaStatusService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -21,14 +21,14 @@ public class IdeaStatusController {
 	
 	@PostMapping
 	public ResponseEntity<IdeaStatus> create(
-			@RequestBody @Valid final IdeaStatusRequest statusRequest)  {
+			@RequestBody @Validated final IdeaStatusRequest statusRequest)  {
 		IdeaStatus createdStatus = service.create(statusRequest);
 		return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<IdeaStatus> update(@PathVariable("id") final long id,
-									   @RequestBody @Valid final IdeaStatusRequest statusRequest) {
+									   @RequestBody @Validated final IdeaStatusRequest statusRequest) {
 		IdeaStatus updatedStatus = service.update(id, statusRequest);
 		return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
 	}

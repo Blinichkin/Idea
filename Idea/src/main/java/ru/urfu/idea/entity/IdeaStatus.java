@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class IdeaStatus implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(nullable = false)
+	@Column(name = "name", nullable = false)
 	private String name;
 	
 	public IdeaStatusEnum getName() {
@@ -34,12 +34,8 @@ public class IdeaStatus implements Serializable {
 		throw new IllegalArgumentException("No such value");
 	}
 	
-	public void setName(IdeaStatusEnum ideaStatusEnum) {
-		if (ideaStatusEnum == null) {
-			name = null;
-		}
-		
-		name = ideaStatusEnum.getName();
+	public void setName(IdeaStatusEnum status) {
+		name = status.getName();
 	}
 	
 }

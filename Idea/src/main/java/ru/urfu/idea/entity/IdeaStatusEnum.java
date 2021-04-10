@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

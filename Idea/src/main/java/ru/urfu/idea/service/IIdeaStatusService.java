@@ -1,7 +1,7 @@
 package ru.urfu.idea.service;
 
-import ru.urfu.idea.model.IdeaStatus;
-import ru.urfu.idea.request.IdeaStatusRequest;
+import ru.urfu.idea.entity.IdeaStatus;
+import ru.urfu.idea.mapper.request.IdeaStatusRequest;
 
 import java.util.List;
 

@@ -1,6 +1,13 @@
-INSERT INTO algorithms (id, name) VALUES (1, 'BCRYPT');
-INSERT INTO algorithms (id, name) VALUES (2, 'SCRYPT');
+INSERT INTO roles (id, name) VALUES (1, 'USER');
+INSERT INTO roles (id, name) VALUES (2, 'EXPERT');
+INSERT INTO roles (id, name) VALUES (3, 'MODERATOR');
+INSERT INTO roles (id, name) VALUES (4, 'ADMIN');
 
-INSERT INTO roles (id, name, permission) VALUES (1, 'USER', '000');
-INSERT INTO roles (id, name, permission) VALUES (2, 'MODERATOR', '000');
-INSERT INTO roles (id, name, permission) VALUES (3, 'ADMIN', '000');
+INSERT INTO idea_statuses (id, name) VALUES (1, 'NEW');
+INSERT INTO idea_statuses (id, name) VALUES (2, 'MODERATION');
+INSERT INTO idea_statuses (id, name) VALUES (3, 'VOTING_STUDENT');
+INSERT INTO idea_statuses (id, name) VALUES (4, 'IN_WORK');
+INSERT INTO idea_statuses (id, name) VALUES (5, 'COMPLETED');
+
+INSERT INTO voting_statuses (id, name) VALUES (1, 'ACTIVE');
+INSERT INTO voting_statuses (id, name) VALUES (2, 'COMPLETED');

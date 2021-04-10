@@ -1,4 +1,4 @@
-package ru.urfu.idea.request;
+package ru.urfu.idea.mapper.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +9,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ContactRequest implements Serializable {
+public class VotingRequest implements Serializable {
 	
-	private String phoneNumber;
-	
-	private String email;
+	private long ideaId;
 	
 }

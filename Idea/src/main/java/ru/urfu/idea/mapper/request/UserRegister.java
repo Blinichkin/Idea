@@ -1,4 +1,4 @@
-package ru.urfu.idea.request;
+package ru.urfu.idea.mapper.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserRequest implements Serializable {
+public class UserRegister implements Serializable {
 	
 	private String login;
 	

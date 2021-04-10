@@ -2,62 +2,83 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.urfu.idea.mapper.IUserMapper;
-import ru.urfu.idea.model.User;
+import ru.urfu.idea.entity.Role;
+import ru.urfu.idea.entity.RoleEnum;
+import ru.urfu.idea.entity.User;
+import ru.urfu.idea.repository.IRoleRepository;
 import ru.urfu.idea.repository.IUserRepository;
-import ru.urfu.idea.request.UserRequest;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService {
 	
+	private final PasswordEncoder passwordEncoder;
 	private final IUserRepository userRepository;
-	private final IUserMapper mapper;
+	private final IRoleRepository roleRepository;
 	
 	@Override
-	public User register(UserRequest userRequest) {
-		User user = mapper.requestToModel(userRequest);
+	public User create(User userRegister) {
+		if (findByLogin(userRegister.getLogin()) != null) {
+			throw new RuntimeException("Login already exists");
+		}
 		
-		return userRepository.save(user);
+		User newUser = new User();
+		newUser.setLogin(userRegister.getLogin());
+		newUser.setPassword(passwordEncoder.encode(userRegister.getPassword()));
+		newUser.setLastName(userRegister.getLastName());
+		newUser.setFirstName(userRegister.getFirstName());
+		newUser.setPatronymic(userRegister.getPatronymic());
+		newUser.setRoles(createRoles());
+		
+		return userRepository.save(newUser);
+	}
+	
+	private Collection<Role> createRoles() {
+		Collection<Role> roles = new ArrayList<>();
+		
+		Role role = roleRepository.findByName(RoleEnum.USER.getName())
+				.orElseThrow(() -> new RuntimeException("Role not found"));
+		
+		roles.add(role);
+		
+		return roles;
 	}
 	
 	@Override
 	public User update(long id, User user) {
-		User currentUser = findById(id);
+		User currentUser = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found"));
 		
-		currentUser.setUsername(user.getUsername());
-		currentUser.setPassword(user.getPassword());
 		currentUser.setFirstName(user.getFirstName());
 		currentUser.setLastName(user.getLastName());
 		currentUser.setPatronymic(user.getPatronymic());
-		currentUser.setRoles(user.getRoles());
 		
 		return userRepository.saveAndFlush(currentUser);
 	}
 	
 	@Override
-	public List<User> findAll() {
+	public Collection<User> findAll() {
 		return userRepository.findAll();
 	}
 	
 	@Override
 	public User findById(long id) {
-		return userRepository.findById(id).get();
+		return userRepository.findById(id).orElse(null);
+	}
+	
+	@Override
+	public User findByLogin(String login) {
+		return userRepository.findByLogin(login).orElse(null);
 	}
 	
 	@Override
 	public void delete(long id) {
 		userRepository.deleteById(id);
-	}
-	
-	@Override
-	public User loadUserByUsername(String s) throws UsernameNotFoundException {
-		return userRepository.findByUsername(s).orElseThrow();
 	}
 	
 }

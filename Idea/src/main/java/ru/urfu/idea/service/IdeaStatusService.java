@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.mapper.IIdeaStatusMapper;
-import ru.urfu.idea.model.IdeaStatus;
+import ru.urfu.idea.entity.IdeaStatus;
 import ru.urfu.idea.repository.IIdeaStatusRepository;
-import ru.urfu.idea.request.IdeaStatusRequest;
+import ru.urfu.idea.mapper.request.IdeaStatusRequest;
 
 import java.util.List;
 

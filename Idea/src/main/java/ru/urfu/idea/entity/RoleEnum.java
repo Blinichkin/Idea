@@ -1,4 +1,4 @@
-package ru.urfu.idea.model;
+package ru.urfu.idea.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import java.io.Serializable;
 @Getter
 public enum RoleEnum implements Serializable {
 
-	READ("USER"),
+	USER("USER"),
 	EXPERT("EXPERT"),
-	MODERATOR("MODERATOR"),
+	MODER("MODER"),
 	ADMIN("ADMIN");
 	
 	private final String name;
