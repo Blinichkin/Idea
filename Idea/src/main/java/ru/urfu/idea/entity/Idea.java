@@ -38,6 +38,9 @@ public class Idea implements Serializable {
 	@JoinColumn(name = "status_id", nullable = false)
 	private IdeaStatus status;
 	
+	@OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<Attachment> attachments;
+	
 	@CreatedDate
 	@Column(name = "created_date", nullable = false)
 	private LocalDateTime createdDate;

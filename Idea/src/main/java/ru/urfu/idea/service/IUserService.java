@@ -6,16 +6,16 @@ import java.util.Collection;
 
 public interface IUserService {
 	
-	public User create(User user);
+	User create(User user);
 	
-	public User update(long id, User user);
+	User update(long id, User user);
 	
-	public Collection<User> findAll();
+	Collection<User> findAll();
 	
-	public User findById(long id);
+	User findById(long id);
 	
-	public User findByLogin(String login);
+	User findByLogin(String login);
 	
-	public void delete(long id);
+	void delete(long id);
 	
 }

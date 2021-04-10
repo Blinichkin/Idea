@@ -6,14 +6,14 @@ import java.util.Collection;
 
 public interface IIdeaService {
 	
-	public Idea create(Idea idea);
+	Idea create(Idea idea);
 	
-	public Idea update(long id, Idea idea);
+	Idea update(long id, Idea idea);
 	
-	public Collection<Idea> findAll();
+	Collection<Idea> findAll();
 	
-	public Idea findById(long id);
+	Idea findById(long id);
 	
-	public void delete(long id);
+	void delete(long id);
 
 }

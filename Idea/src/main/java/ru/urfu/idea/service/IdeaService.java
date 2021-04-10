@@ -27,7 +27,7 @@ public class IdeaService implements IIdeaService {
 		newIdea.setName(idea.getName());
 		newIdea.setText(idea.getText());
 		newIdea.setContact(idea.getContact());
-		newIdea.setStatus(status);
+		newIdea.setStatus(status);;
 		
 		return ideaRepository.save(newIdea);
 	}

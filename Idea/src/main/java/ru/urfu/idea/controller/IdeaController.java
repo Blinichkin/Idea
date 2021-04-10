@@ -8,14 +8,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.urfu.idea.entity.Attachment;
 import ru.urfu.idea.entity.Idea;
 import ru.urfu.idea.entity.User;
 import ru.urfu.idea.mapper.IIdeaMapper;
 import ru.urfu.idea.mapper.request.IdeaRequest;
 import ru.urfu.idea.mapper.response.IdeaResponse;
 import ru.urfu.idea.security.UserPrincipal;
+import ru.urfu.idea.service.IAttachmentService;
 import ru.urfu.idea.service.IIdeaService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -24,14 +28,18 @@ import java.util.Collection;
 public class IdeaController {
 	
 	private final IIdeaService ideaService;
+	private final IAttachmentService attachmentService;
 	private final IIdeaMapper ideaMapper;
 	
-	@PostMapping
+	@PostMapping(consumes = {"multipart/form-data"})
 	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<IdeaResponse> create(@AuthenticationPrincipal final UserPrincipal userPrincipal,
-											   @RequestBody @Validated final IdeaRequest ideaRequest) {
+	public ResponseEntity<IdeaResponse> create(@RequestPart("idea") @Validated final IdeaRequest ideaRequest,
+											   @RequestPart("attachment") MultipartFile[] files) {
 		Idea idea = ideaMapper.requestToModel(ideaRequest);
 		Idea createdIdea = ideaService.create(idea);
+		for (MultipartFile file: files) {
+			attachmentService.create(createdIdea.getId(), file);
+		}
 		IdeaResponse ideaResponse = ideaMapper.modelToResponse(createdIdea);
 		
 		return new ResponseEntity<>(ideaResponse, HttpStatus.CREATED);
@@ -40,7 +48,7 @@ public class IdeaController {
 	@PutMapping("/{id}")
 	//@PostAuthorize("hasRole('ADMIN') || " + "returnObject.user.username == authentication.name")
 	public ResponseEntity<IdeaResponse> update(@PathVariable("id") final long id,
-									   @RequestBody @Validated final Idea idea) {
+											   @RequestBody @Validated final Idea idea) {
 		Idea updatedIdea = ideaService.update(id, idea);
 		IdeaResponse ideaResponse = ideaMapper.modelToResponse(updatedIdea);
 		
