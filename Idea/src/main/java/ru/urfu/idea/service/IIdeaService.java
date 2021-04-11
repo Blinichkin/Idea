@@ -15,5 +15,9 @@ public interface IIdeaService {
 	Idea findById(long id);
 	
 	Idea delete(long id);
+	
+	Idea submit(long id);
+	
+	Collection<Idea> findAllByStatusName(String name);
 
 }

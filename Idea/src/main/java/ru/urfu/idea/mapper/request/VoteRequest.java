@@ -13,6 +13,6 @@ public class VoteRequest implements Serializable {
 	
 	private long votingId;
 	
-	private byte optionAnswer;
+	private boolean optionAnswer;
 	
 }

@@ -31,7 +31,7 @@ public class VoteService implements IVoteService {
 		
 		Vote newVote = new Vote();
 		newVote.setVoting(voting);
-		newVote.setOptionAnswer(vote.getOptionAnswer());
+		newVote.setOptionAnswer(vote.isOptionAnswer());
 		
 		return voteRepository.save(newVote);
 	}
@@ -69,7 +69,7 @@ public class VoteService implements IVoteService {
 		Vote currentVote = voteRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Vote not found"));
 		
-		currentVote.setOptionAnswer(vote.getOptionAnswer());
+		currentVote.setOptionAnswer(vote.isOptionAnswer());
 		
 		return voteRepository.saveAndFlush(currentVote);
 	}

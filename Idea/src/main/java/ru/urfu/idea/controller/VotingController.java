@@ -74,4 +74,28 @@ public class VotingController {
 		return new ResponseEntity<>(votingResponse, HttpStatus.OK);
 	}
 	
+	@GetMapping("/{id}/votesCount")
+	public ResponseEntity<Long> getVotesCount(@PathVariable("id") final long id) {
+		long count = votingService.votesCount(id);
+		return new ResponseEntity<>(count, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}/votesFor")
+	public ResponseEntity<Long> getVotesFor(@PathVariable("id") final long id) {
+		long count = votingService.votesFor(id);
+		return new ResponseEntity<>(count, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}/votesAgainst")
+	public ResponseEntity<Long> getVotesAgainst(@PathVariable("id") final long id) {
+		long count = votingService.votesAgainst(id);
+		return new ResponseEntity<>(count, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}/votesResult")
+	public ResponseEntity<Long> getVotesResult(@PathVariable("id") final long id) {
+		long count = votingService.votesResult(id);
+		return new ResponseEntity<>(count, HttpStatus.OK);
+	}
+	
 }

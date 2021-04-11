@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.*;
-import ru.urfu.idea.repository.IIdeaRepository;
-import ru.urfu.idea.repository.IVotingRepository;
-import ru.urfu.idea.repository.IVotingStatusRepository;
-import ru.urfu.idea.repository.IVotingTypeRepository;
+import ru.urfu.idea.repository.*;
 
 import java.util.Collection;
 
@@ -16,6 +13,7 @@ import java.util.Collection;
 public class VotingService implements IVotingService {
 	
 	private final IVotingRepository votingRepository;
+	private final IVoteRepository voteRepository;
 	private final IVotingStatusRepository votingStatusRepository;
 	private final IVotingTypeRepository votingTypeRepository;
 	private final IIdeaRepository ideaRepository;
@@ -69,6 +67,29 @@ public class VotingService implements IVotingService {
 		}
 		
 		return voting;
+	}
+	
+	@Override
+	public Long votesCount(long id) {
+		return voteRepository.getVotesCount(id);
+	}
+	
+	@Override
+	public Long votesFor(long id) {
+		return voteRepository.getVotesFor(id);
+	}
+	
+	@Override
+	public Long votesAgainst(long id) {
+		return voteRepository.getVotesAgainst(id);
+	}
+	
+	@Override
+	public Long votesResult(long id) {
+		Long votesFor = voteRepository.getVotesFor(id);
+		Long votesAgainst = voteRepository.getVotesAgainst(id);
+		
+		return votesFor - votesAgainst;
 	}
 	
 }

@@ -16,4 +16,12 @@ public interface IVotingService {
 	
 	Voting delete(long id);
 	
+	Long votesCount(long id);
+	
+	Long votesFor(long id);
+	
+	Long votesAgainst(long id);
+	
+	Long votesResult(long id);
+	
 }

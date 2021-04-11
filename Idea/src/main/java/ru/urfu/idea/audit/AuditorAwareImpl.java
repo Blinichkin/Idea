@@ -1,4 +1,4 @@
-package ru.urfu.idea.config;
+package ru.urfu.idea.audit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;

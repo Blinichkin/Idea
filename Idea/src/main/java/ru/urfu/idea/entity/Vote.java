@@ -28,7 +28,7 @@ public class Vote implements Serializable {
 	private Voting voting;
 	
 	@Column(name = "option_answer", nullable = false)
-	private byte optionAnswer;
+	private boolean optionAnswer;
 	
 	@CreatedDate
 	@Column(name = "created_date", nullable = false)

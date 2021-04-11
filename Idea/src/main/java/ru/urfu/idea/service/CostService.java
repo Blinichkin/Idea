@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Cost;
 import ru.urfu.idea.entity.CostType;
 import ru.urfu.idea.repository.ICostRepository;
+import ru.urfu.idea.repository.ICostTypeRepository;
 
 import java.util.Collection;
 
@@ -14,13 +15,17 @@ import java.util.Collection;
 public class CostService implements ICostService {
 	
 	private final ICostRepository costRepository;
+	private final ICostTypeRepository costTypeRepository;
 	
 	@Override
 	public Cost create(final Cost cost) {
-		CostType type = cost.getType();
-		Cost newCost = new Cost();
+		CostType type = costTypeRepository.findByName(cost.getType().getName().getName())
+				.orElseThrow(() -> new RuntimeException("Cost type not found"));
 		
-		newCost.setType(cost.getType());
+		checkCost(type, cost);
+		Cost newCost = new Cost();
+		newCost.setType(type);
+		
 		switch (type.getName()) {
 			case EXACT:
 				newCost.setValue(cost.getValue());
@@ -32,6 +37,24 @@ public class CostService implements ICostService {
 		}
 		
 		return costRepository.save(newCost);
+	}
+	
+	private void checkCost(CostType type, Cost cost) {
+		switch (type.getName()) {
+			case EXACT:
+				if (cost.getValue() == null) {
+					throw new RuntimeException("Cost value not found");
+				}
+				break;
+			case RANGE:
+				if (cost.getMinValue() == null) {
+					throw new RuntimeException("Cost minValue not found");
+				}
+				if (cost.getMaxValue() == null) {
+					throw new RuntimeException("Cost maxValue not found");
+				}
+				break;
+		}
 	}
 	
 	@Override

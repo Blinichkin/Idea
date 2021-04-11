@@ -14,7 +14,7 @@ public class VoteResponse implements Serializable {
 	
 	private long id;
 	
-	private byte optionAnswer;
+	private boolean optionAnswer;
 	
 	private LocalDateTime createdDate;
 	

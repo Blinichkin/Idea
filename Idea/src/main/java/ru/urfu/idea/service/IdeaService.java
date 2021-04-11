@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.*;
-import ru.urfu.idea.repository.ICostRepository;
-import ru.urfu.idea.repository.ICostTypeRepository;
 import ru.urfu.idea.repository.IIdeaRepository;
 import ru.urfu.idea.repository.IIdeaStatusRepository;
 
@@ -17,7 +15,6 @@ public class IdeaService implements IIdeaService {
 
 	private final IIdeaRepository ideaRepository;
 	private final IIdeaStatusRepository statusRepository;
-	private final ICostTypeRepository costTypeRepository;
 	
 	@Override
 	public Idea create(final Idea idea) {
@@ -27,35 +24,12 @@ public class IdeaService implements IIdeaService {
 		Idea newIdea = new Idea();
 		newIdea.setName(idea.getName());
 		newIdea.setText(idea.getText());
-		newIdea.setCost(createCost(idea.getCost()));
-		newIdea.setContact(createContact(idea.getContact()));
+		newIdea.setCost(idea.getCost());
+		newIdea.setContact(idea.getContact());
 		newIdea.setAddress(idea.getAddress());
 		newIdea.setStatus(status);
 		
 		return ideaRepository.save(newIdea);
-	}
-	
-	private Cost createCost(final Cost cost) {
-		CostType type = costTypeRepository.findByName(cost.getType().getName().getName())
-				.orElseThrow(() -> new RuntimeException("Cost type not found"));
-		
-		Cost newCost = new Cost();
-		
-		newCost.setType(type);
-		newCost.setValue(cost.getValue());
-		newCost.setMinValue(cost.getMinValue());
-		newCost.setMaxValue(cost.getMaxValue());
-		
-		return newCost;
-	}
-	
-	private Contact createContact(final Contact contact) {
-		Contact newContact = new Contact();
-		
-		newContact.setEmail(contact.getEmail());
-		newContact.setPhoneNumber(contact.getPhoneNumber());
-		
-		return newContact;
 	}
 	
 	@Override
@@ -90,6 +64,26 @@ public class IdeaService implements IIdeaService {
 		}
 		
 		return idea;
+	}
+	
+	@Override
+	public Idea submit(final long id) {
+		Idea currentIdea = ideaRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Idea not found"));
+		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.MODERATION.getName())
+				.orElseThrow(() -> new RuntimeException("Status not found"));
+		
+		currentIdea.setStatus(status);
+		
+		return ideaRepository.saveAndFlush(currentIdea);
+	}
+	
+	@Override
+	public Collection<Idea> findAllByStatusName(String name) {
+		IdeaStatus status = statusRepository.findByName(name)
+				.orElseThrow(() -> new RuntimeException("Status not found"));
+		
+		return ideaRepository.findAllByStatus(status.getId());
 	}
 	
 }

@@ -10,11 +10,11 @@ import java.io.Serializable;
 public enum IdeaStatusEnum implements Serializable {
 	
 	NEW("NEW"),
-	MODERATION("Модерация"),
-	VOTING_STUDENT("Голосование (студенческий состав)"),
-	VOTING_EXPERT("Голосование (экспертный состав)"),
-	IN_WORK("Осуществление работ"),
-	COMPLETED("Выполнена");
+	MODERATION("MODERATION"),
+	VOTING_STUDENT("VOTING_STUDENT"),
+	VOTING_EXPERT("VOTING_EXPERT"),
+	IN_WORK("IN_WORK"),
+	COMPLETED("COMPLETED");
 	
 	private final String name;
 	
