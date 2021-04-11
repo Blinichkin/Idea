@@ -34,16 +34,22 @@ public class UserService implements IUserService {
 		newUser.setLastName(user.getLastName());
 		newUser.setFirstName(user.getFirstName());
 		newUser.setPatronymic(user.getPatronymic());
-		newUser.setRoles(createRoles());
+		newUser.setRoles(createRoles(user));
 		
 		return userRepository.save(newUser);
 	}
 	
-	private Collection<Role> createRoles() {
+	private Collection<Role> createRoles(final User user) {
 		Collection<Role> roles = new ArrayList<>();
-		Role role = roleRepository.findByName(RoleEnum.USER.getName())
+		Role roleUser = roleRepository.findByName(RoleEnum.USER.getName())
 				.orElseThrow(() -> new RuntimeException("Role not found"));
-		roles.add(role);
+		roles.add(roleUser);
+		
+		if (user.getLogin().equals("admin")) {
+			Role roleAdmin = roleRepository.findByName(RoleEnum.ADMIN.getName())
+					.orElseThrow(() -> new RuntimeException("Role not found"));
+			roles.add(roleAdmin);
+		}
 		
 		return roles;
 	}

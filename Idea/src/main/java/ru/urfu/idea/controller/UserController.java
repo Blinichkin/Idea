@@ -13,7 +13,6 @@ import ru.urfu.idea.mapper.IUserMapper;
 import ru.urfu.idea.mapper.request.UserProfileRequest;
 import ru.urfu.idea.mapper.request.UserRegister;
 import ru.urfu.idea.mapper.response.UserResponse;
-import ru.urfu.idea.security.AuthenticationProviderService;
 import ru.urfu.idea.security.UserPrincipal;
 import ru.urfu.idea.service.IUserService;
 
@@ -26,7 +25,6 @@ public class UserController {
 	
 	private final IUserService userService;
 	private final IUserMapper userMapper;
-	private final AuthenticationProviderService authenticationProviderService;
 	
 	@PostMapping
 	public ResponseEntity<UserResponse> create(@RequestBody @Validated final UserRegister userRegister) {

@@ -13,4 +13,8 @@ public class VotingRequest implements Serializable {
 	
 	private long ideaId;
 	
+	private int requiredVotes;
+	
+	private VotingTypeRequest type;
+	
 }

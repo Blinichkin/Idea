@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface IVoteService {
 	
-	Vote create(long votingId, Vote vote);
+	Vote create(long userId, long votingId, Vote vote);
 	
 	Vote update(long id, Vote vote);
 	

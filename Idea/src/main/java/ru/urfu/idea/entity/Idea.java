@@ -31,8 +31,15 @@ public class Idea implements Serializable {
 	private String text;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "cost_id", nullable = false)
+	private Cost cost;
+	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "contact_id", nullable = false)
 	private Contact contact;
+	
+	@Column(name = "address")
+	private String address;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "status_id", nullable = false)

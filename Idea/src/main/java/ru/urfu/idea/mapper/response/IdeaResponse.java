@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.urfu.idea.entity.Contact;
+import ru.urfu.idea.entity.Cost;
 import ru.urfu.idea.entity.IdeaStatus;
 
 import java.io.Serializable;
@@ -19,8 +20,12 @@ public class IdeaResponse implements Serializable {
 	private String name;
 	
 	private String text;
+	
+	private Cost cost;
 
 	private Contact contact;
+	
+	private String address;
 	
 	private IdeaStatus status;
 	

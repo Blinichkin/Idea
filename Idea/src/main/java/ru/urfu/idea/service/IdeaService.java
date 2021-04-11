@@ -3,9 +3,9 @@ package ru.urfu.idea.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.idea.entity.Idea;
-import ru.urfu.idea.entity.IdeaStatus;
-import ru.urfu.idea.entity.IdeaStatusEnum;
+import ru.urfu.idea.entity.*;
+import ru.urfu.idea.repository.ICostRepository;
+import ru.urfu.idea.repository.ICostTypeRepository;
 import ru.urfu.idea.repository.IIdeaRepository;
 import ru.urfu.idea.repository.IIdeaStatusRepository;
 
@@ -17,6 +17,7 @@ public class IdeaService implements IIdeaService {
 
 	private final IIdeaRepository ideaRepository;
 	private final IIdeaStatusRepository statusRepository;
+	private final ICostTypeRepository costTypeRepository;
 	
 	@Override
 	public Idea create(final Idea idea) {
@@ -26,10 +27,35 @@ public class IdeaService implements IIdeaService {
 		Idea newIdea = new Idea();
 		newIdea.setName(idea.getName());
 		newIdea.setText(idea.getText());
-		newIdea.setContact(idea.getContact());
-		newIdea.setStatus(status);;
+		newIdea.setCost(createCost(idea.getCost()));
+		newIdea.setContact(createContact(idea.getContact()));
+		newIdea.setAddress(idea.getAddress());
+		newIdea.setStatus(status);
 		
 		return ideaRepository.save(newIdea);
+	}
+	
+	private Cost createCost(final Cost cost) {
+		CostType type = costTypeRepository.findByName(cost.getType().getName().getName())
+				.orElseThrow(() -> new RuntimeException("Cost type not found"));
+		
+		Cost newCost = new Cost();
+		
+		newCost.setType(type);
+		newCost.setValue(cost.getValue());
+		newCost.setMinValue(cost.getMinValue());
+		newCost.setMaxValue(cost.getMaxValue());
+		
+		return newCost;
+	}
+	
+	private Contact createContact(final Contact contact) {
+		Contact newContact = new Contact();
+		
+		newContact.setEmail(contact.getEmail());
+		newContact.setPhoneNumber(contact.getPhoneNumber());
+		
+		return newContact;
 	}
 	
 	@Override
@@ -39,7 +65,9 @@ public class IdeaService implements IIdeaService {
 		
 		currentIdea.setName(idea.getName());
 		currentIdea.setText(idea.getText());
+		currentIdea.setCost(idea.getCost());
 		currentIdea.setContact(idea.getContact());
+		currentIdea.setAddress(idea.getAddress());
 		
 		return ideaRepository.saveAndFlush(currentIdea);
 	}

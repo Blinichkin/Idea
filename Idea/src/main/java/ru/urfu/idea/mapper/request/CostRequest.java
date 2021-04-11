@@ -5,20 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class IdeaRequest implements Serializable {
+public class CostRequest implements Serializable {
 	
-	private String name;
+	private CostTypeRequest type;
 	
-	private String text;
+	private BigDecimal value;
 	
-	private CostRequest cost;
+	private BigDecimal minValue;
 	
-	private ContactRequest contact;
-	
-	private String address;
+	private BigDecimal maxValue;
 	
 }

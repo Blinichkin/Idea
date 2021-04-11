@@ -11,3 +11,10 @@ INSERT INTO idea_statuses (id, name) VALUES (5, 'COMPLETED');
 
 INSERT INTO voting_statuses (id, name) VALUES (1, 'ACTIVE');
 INSERT INTO voting_statuses (id, name) VALUES (2, 'COMPLETED');
+
+INSERT INTO cost_types (id, name) VALUES (1, 'UNKNOWN');
+INSERT INTO cost_types (id, name) VALUES (2, 'EXACT');
+INSERT INTO cost_types (id, name) VALUES (3, 'RANGE');
+
+INSERT INTO voting_types (id, name) VALUES (1, 'STUDENT');
+INSERT INTO voting_types (id, name) VALUES (2, 'EXPERT');

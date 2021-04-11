@@ -7,6 +7,7 @@ import ru.urfu.idea.entity.*;
 import ru.urfu.idea.repository.IIdeaRepository;
 import ru.urfu.idea.repository.IVotingRepository;
 import ru.urfu.idea.repository.IVotingStatusRepository;
+import ru.urfu.idea.repository.IVotingTypeRepository;
 
 import java.util.Collection;
 
@@ -16,6 +17,7 @@ public class VotingService implements IVotingService {
 	
 	private final IVotingRepository votingRepository;
 	private final IVotingStatusRepository votingStatusRepository;
+	private final IVotingTypeRepository votingTypeRepository;
 	private final IIdeaRepository ideaRepository;
 	
 	@Override
@@ -26,8 +28,13 @@ public class VotingService implements IVotingService {
 		VotingStatus status = votingStatusRepository.findByName(VotingStatusEnum.ACTIVE.getName())
 				.orElseThrow(() -> new RuntimeException("Voting status not found"));
 		
+		VotingType type = votingTypeRepository.findByName(voting.getType().getName().getName())
+				.orElseThrow(() -> new RuntimeException("Voting type status not found"));
+		
 		Voting newVoting = new Voting();
 		newVoting.setIdea(idea);
+		newVoting.setRequiredVotes(voting.getRequiredVotes());
+		newVoting.setType(type);
 		newVoting.setStatus(status);
 		
 		return votingRepository.save(newVoting);
@@ -38,6 +45,7 @@ public class VotingService implements IVotingService {
 		Voting currentVoting = votingRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Voting not found"));
 		
+		currentVoting.setRequiredVotes(voting.getRequiredVotes());
 		currentVoting.setStatus(voting.getStatus());
 		
 		return votingRepository.saveAndFlush(currentVoting);

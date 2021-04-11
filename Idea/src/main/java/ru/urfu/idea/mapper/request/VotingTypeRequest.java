@@ -9,16 +9,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class IdeaRequest implements Serializable {
+public class VotingTypeRequest implements Serializable {
 	
 	private String name;
-	
-	private String text;
-	
-	private CostRequest cost;
-	
-	private ContactRequest contact;
-	
-	private String address;
 	
 }

@@ -28,6 +28,13 @@ public class Voting implements Serializable {
 	@JoinColumn(name = "idea_id", nullable = false)
 	private Idea idea;
 	
+	@Column(name = "required_votes", nullable = false)
+	private int requiredVotes;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "type_id", nullable = false)
+	private VotingType type;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "status_id", nullable = false)
 	private VotingStatus status;

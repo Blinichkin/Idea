@@ -27,9 +27,10 @@ public class VoteController {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<VoteResponse> create(@RequestBody @Validated final VoteRequest voteRequest) {
+	public ResponseEntity<VoteResponse> create(@AuthenticationPrincipal UserPrincipal userPrincipal,
+											   @RequestBody @Validated final VoteRequest voteRequest) {
 		Vote vote = voteMapper.requestToModel(voteRequest);
-		Vote createdVote = voteService.create(voteRequest.getVotingId(), vote);
+		Vote createdVote = voteService.create(userPrincipal.getId(), voteRequest.getVotingId(), vote);
 		VoteResponse voteResponse = voteMapper.modelToResponse(createdVote);
 		
 		return new ResponseEntity<>(voteResponse, HttpStatus.CREATED);
