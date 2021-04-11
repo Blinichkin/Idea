@@ -1,5 +1,6 @@
 package ru.urfu.idea.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class Role implements GrantedAuthority {
 	}
 	
 	@Override
+	@JsonIgnore
 	public String getAuthority() {
 		return name;
 	}

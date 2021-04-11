@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.urfu.idea.entity.Vote;
 import ru.urfu.idea.mapper.IVoteMapper;
 import ru.urfu.idea.mapper.request.VoteRequest;
 import ru.urfu.idea.mapper.response.VoteResponse;
+import ru.urfu.idea.security.UserPrincipal;
 import ru.urfu.idea.service.IVoteService;
 
 import java.util.Collection;
@@ -34,8 +36,9 @@ public class VoteController {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<VoteResponse> update(@PathVariable("id") final long id,
+	@PreAuthorize("hasAuthority('ADMIN') || (hasAuthority('USER') && #id == #userPrincipal.id)")
+	public ResponseEntity<VoteResponse> update(@AuthenticationPrincipal UserPrincipal userPrincipal,
+											   @PathVariable("id") final long id,
 											   @RequestBody @Validated final Vote vote) {
 		Vote updatedVote = voteService.update(id, vote);
 		VoteResponse voteResponse = voteMapper.modelToResponse(updatedVote);

@@ -45,10 +45,6 @@ public class UserService implements IUserService {
 				.orElseThrow(() -> new RuntimeException("Role not found"));
 		roles.add(role);
 		
-		Role role2 = roleRepository.findByName(RoleEnum.ADMIN.getName())
-				.orElseThrow(() -> new RuntimeException("Role not found"));
-		roles.add(role2);
-		
 		return roles;
 	}
 	

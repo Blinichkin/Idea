@@ -13,7 +13,7 @@ import java.util.Collection;
 @Data
 public class UserPrincipal implements Serializable {
 	
-	private long id;
+	private Long id;
 	
 	private String login;
 	
