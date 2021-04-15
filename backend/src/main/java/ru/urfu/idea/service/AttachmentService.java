@@ -2,68 +2,40 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import ru.urfu.idea.entity.Attachment;
-import ru.urfu.idea.entity.Idea;
 import ru.urfu.idea.repository.IAttachmentRepository;
-import ru.urfu.idea.repository.IIdeaRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.UUID;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
 public class AttachmentService implements IAttachmentService {
 	
 	private final IAttachmentRepository attachmentRepository;
-	private final IIdeaRepository ideaRepository;
 	
 	@Override
-	public Attachment create(final long ideaId, final MultipartFile multipartFile) {
-		String filename = multipartFile.getOriginalFilename();
-		Idea idea = ideaRepository.findById(ideaId)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+	public Attachment create(final MultipartFile file) {
+		String filename = UUID.randomUUID() + "." + file.getOriginalFilename();
 		
-		checkDirectories(ideaId);
-		createFile(multipartFile, "files/" + ideaId + "/" + filename);
+		checkDirectories("files");
+		createFile(file, "files" + "/" + filename);
 		
 		Attachment attachment = new Attachment();
 		attachment.setName(filename);
-		attachment.setIdea(idea);
+		attachment.setContentType(file.getContentType());
 		
 		return attachmentRepository.save(attachment);
 	}
-	
-	private void checkDirectories(final long ideaId) {
-		try {
-			if (!Files.exists(Paths.get("files"))) {
-				Files.createDirectory(Paths.get("files"));
-			}
-			
-			if (!Files.exists(Paths.get("files" + "/" + ideaId))) {
-				Files.createDirectory(Paths.get("files" + "/" + ideaId));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void createFile(final MultipartFile multipartFile, final String path) {
-		try {
-			Files.copy(multipartFile.getInputStream(), Paths.get(path));
-		} catch (IOException e) {
-			throw new RuntimeException("FAIL! -> message = " + e.getMessage());
-		}
-	}
-	
-	@Override
-	public Attachment update(final long id, final Attachment attachment) {
-		return null;
-	}
-	
+
 	@Override
 	public Collection<Attachment> findAll() {
 		return attachmentRepository.findAll();
@@ -79,13 +51,49 @@ public class AttachmentService implements IAttachmentService {
 		Attachment attachment = attachmentRepository.findById(id).orElse(null);
 		if (attachment != null) {
 			attachmentRepository.deleteById(id);
-			deleteFile("files/" + attachment.getIdea().getId() + "/" + attachment.getName());
+			deleteFile("files" + "/" + attachment.getName());
 		}
 		
 		return attachment;
 	}
 	
-	private void deleteFile(String path) {
+	@Override
+	public Resource download(long id) {
+		Attachment attachment = attachmentRepository.findById(id).orElse(null);
+		if (attachment == null) {
+			return null;
+		}
+		
+		return openFile("files" + "/" + attachment.getName());
+	}
+	
+	private static void checkDirectories(final String name) {
+		try {
+			if (!Files.exists(Paths.get(name))) {
+				Files.createDirectory(Paths.get(name));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void createFile(final MultipartFile multipartFile, final String path) {
+		try {
+			Files.copy(multipartFile.getInputStream(), Paths.get(path));
+		} catch (IOException e) {
+			throw new RuntimeException("FAIL! -> message = " + e.getMessage());
+		}
+	}
+	
+	private Resource openFile(final String path) {
+		try {
+			return new UrlResource(Paths.get(path).toUri());
+		} catch (IOException e) {
+			throw new RuntimeException("FAIL! -> message = " + e.getMessage());
+		}
+	}
+	
+	private void deleteFile(final String path) {
 		try {
 			Files.delete(Paths.get(path));
 		} catch (IOException e) {

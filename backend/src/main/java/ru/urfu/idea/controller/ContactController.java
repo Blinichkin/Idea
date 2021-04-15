@@ -9,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.urfu.idea.entity.Contact;
-import ru.urfu.idea.entity.Vote;
 import ru.urfu.idea.mapper.IContactMapper;
 import ru.urfu.idea.mapper.request.ContactRequest;
 import ru.urfu.idea.security.UserPrincipal;
@@ -64,7 +63,7 @@ public class ContactController {
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Vote> delete(@PathVariable("id") final long id) {
+	public ResponseEntity<Contact> delete(@PathVariable("id") final long id) {
 		Contact contact = contactService.delete(id);
 		if (contact == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

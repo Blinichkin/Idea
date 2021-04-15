@@ -19,14 +19,14 @@ import java.util.Collection;
 @RequestMapping("/api/v1/ideaStatuses")
 public class IdeaStatusController {
 	
-	private final IIdeaStatusService statusService;
-	private final IIdeaStatusMapper statusMapper;
+	private final IIdeaStatusService ideaStatusService;
+	private final IIdeaStatusMapper ideaStatusMapper;
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<IdeaStatus> create(@RequestBody @Validated final IdeaStatusRequest statusRequest) {
-		IdeaStatus status = statusMapper.requestToModel(statusRequest);
-		IdeaStatus createdStatus = statusService.create(status);
+		IdeaStatus status = ideaStatusMapper.requestToModel(statusRequest);
+		IdeaStatus createdStatus = ideaStatusService.create(status);
 		
 		return new ResponseEntity<>(createdStatus, HttpStatus.CREATED);
 	}
@@ -35,21 +35,21 @@ public class IdeaStatusController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<IdeaStatus> update(@PathVariable("id") final long id,
 											 @RequestBody @Validated final IdeaStatusRequest statusRequest) {
-		IdeaStatus status = statusMapper.requestToModel(statusRequest);
-		IdeaStatus updatedStatus = statusService.update(id, status);
+		IdeaStatus status = ideaStatusMapper.requestToModel(statusRequest);
+		IdeaStatus updatedStatus = ideaStatusService.update(id, status);
 		
 		return new ResponseEntity<>(updatedStatus, HttpStatus.OK);
 	}
 	
 	@GetMapping
 	public ResponseEntity<Collection<IdeaStatus>> getAll() {
-		Collection<IdeaStatus> statuses = statusService.findAll();
+		Collection<IdeaStatus> statuses = ideaStatusService.findAll();
 		return new ResponseEntity<>(statuses, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<IdeaStatus> getById(@PathVariable("id") final long id) {
-		IdeaStatus status = statusService.findById(id);
+		IdeaStatus status = ideaStatusService.findById(id);
 		if (status == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -60,7 +60,7 @@ public class IdeaStatusController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<IdeaStatus> delete(@PathVariable("id") final long id) {
-		IdeaStatus status = statusService.delete(id);
+		IdeaStatus status = ideaStatusService.delete(id);
 		if (status == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

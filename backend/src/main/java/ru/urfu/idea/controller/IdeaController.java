@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.urfu.idea.entity.Attachment;
 import ru.urfu.idea.entity.Idea;
 import ru.urfu.idea.mapper.IIdeaMapper;
 import ru.urfu.idea.mapper.request.IdeaRequest;
@@ -19,6 +20,7 @@ import ru.urfu.idea.service.IContactService;
 import ru.urfu.idea.service.ICostService;
 import ru.urfu.idea.service.IIdeaService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -39,10 +41,14 @@ public class IdeaController {
 		Idea idea = ideaMapper.requestToModel(ideaRequest);
 		idea.setCost(costService.create(idea.getCost()));
 		idea.setContact(contactService.create(idea.getContact()));
-		Idea createdIdea = ideaService.create(idea);
+		
+		Collection<Attachment> attachments = new ArrayList<>();
 		for (MultipartFile file: files) {
-			attachmentService.create(createdIdea.getId(), file);
+			attachments.add(attachmentService.create(file));
 		}
+		idea.setAttachments(attachments);
+		
+		Idea createdIdea = ideaService.create(idea);
 		IdeaResponse ideaResponse = ideaMapper.modelToResponse(createdIdea);
 		
 		return new ResponseEntity<>(ideaResponse, HttpStatus.CREATED);

@@ -15,12 +15,12 @@ public class VotingStatusService implements IVotingStatusService {
 	private final IVotingStatusRepository statusRepository;
 	
 	@Override
-	public VotingStatus create(VotingStatus votingStatus) {
+	public VotingStatus create(final VotingStatus votingStatus) {
 		return statusRepository.save(votingStatus);
 	}
 	
 	@Override
-	public VotingStatus update(long id, VotingStatus votingStatus) {
+	public VotingStatus update(final long id, final VotingStatus votingStatus) {
 		VotingStatus currentStatus = statusRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Voting status not found"));
 		
@@ -35,16 +35,18 @@ public class VotingStatusService implements IVotingStatusService {
 	}
 	
 	@Override
-	public VotingStatus findById(long id) {
+	public VotingStatus findById(final long id) {
 		return statusRepository.findById(id).orElse(null);
 	}
 	
 	@Override
-	public void delete(long id) {
-		VotingStatus status = statusRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Voting status not found"));
+	public VotingStatus delete(final long id) {
+		VotingStatus status = statusRepository.findById(id).orElseThrow(null);
+		if (status != null) {
+			statusRepository.deleteById(status.getId());
+		}
 		
-		statusRepository.deleteById(status.getId());
+		return status;
 	}
 	
 }

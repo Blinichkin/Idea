@@ -25,12 +25,11 @@ public class Attachment implements Serializable {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+	@Column(name = "content_type", nullable = false)
+	private String contentType;
+	
 	@CreatedDate
 	@Column(name = "created_date", nullable = false)
 	private LocalDateTime createdDate;
-	
-	@ManyToOne
-	@JoinColumn(name = "idea_id", nullable = false)
-	private Idea idea;
 	
 }

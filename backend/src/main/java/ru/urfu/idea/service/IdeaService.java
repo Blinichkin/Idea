@@ -27,6 +27,7 @@ public class IdeaService implements IIdeaService {
 		newIdea.setCost(idea.getCost());
 		newIdea.setContact(idea.getContact());
 		newIdea.setAddress(idea.getAddress());
+		newIdea.setAttachments(idea.getAttachments());
 		newIdea.setStatus(status);
 		
 		return ideaRepository.save(newIdea);
@@ -42,6 +43,7 @@ public class IdeaService implements IIdeaService {
 		currentIdea.setCost(idea.getCost());
 		currentIdea.setContact(idea.getContact());
 		currentIdea.setAddress(idea.getAddress());
+		currentIdea.setAttachments(idea.getAttachments());
 		
 		return ideaRepository.saveAndFlush(currentIdea);
 	}
