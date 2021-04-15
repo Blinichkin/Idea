@@ -29,6 +29,10 @@ public class VoteService implements IVoteService {
 			throw new RuntimeException("Inappropriate role");
 		}
 		
+		if (voting.getStatus().getName() == VotingStatusEnum.COMPLETED) {
+			throw new RuntimeException("Voting completed");
+		}
+		
 		Vote newVote = new Vote();
 		newVote.setVoting(voting);
 		newVote.setOptionAnswer(vote.isOptionAnswer());
