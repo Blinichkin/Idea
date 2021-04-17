@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Contact;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IContactRepository;
 
 import java.util.Collection;
@@ -26,7 +28,7 @@ public class ContactService implements IContactService {
 	@Override
 	public Contact update(final long id, final Contact contact) {
 		Contact currentContact = contactRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Contact not found"));
+				.orElseThrow(() -> new AppException("Contact not found", HttpStatus.NOT_FOUND));
 		
 		currentContact.setEmail(contact.getEmail());
 		currentContact.setPhoneNumber(contact.getPhoneNumber());

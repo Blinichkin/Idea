@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.*;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IUserRepository;
 import ru.urfu.idea.repository.IVoteRepository;
 import ru.urfu.idea.repository.IVotingRepository;
@@ -21,16 +23,16 @@ public class VoteService implements IVoteService {
 	@Override
 	public Vote create(final long userId, final long votingId, final Vote vote) {
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+				.orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 		Voting voting = votingRepository.findById(votingId)
-				.orElseThrow(() -> new RuntimeException("Voting not found"));
+				.orElseThrow(() -> new AppException("Voting not found", HttpStatus.NOT_FOUND));
 		
 		if (!checkAccess(user, voting.getType())) {
-			throw new RuntimeException("Inappropriate role");
+			throw new AppException("Inappropriate role", HttpStatus.BAD_REQUEST);
 		}
 		
 		if (voting.getStatus().getName() == VotingStatusEnum.COMPLETED) {
-			throw new RuntimeException("Voting completed");
+			throw new AppException("Voting completed", HttpStatus.BAD_REQUEST);
 		}
 		
 		Vote newVote = new Vote();
@@ -62,7 +64,7 @@ public class VoteService implements IVoteService {
 				}
 				break;
 			default:
-				throw new RuntimeException("Voting type not found");
+				throw new AppException("Voting type not found", HttpStatus.NOT_FOUND);
 		}
 		
 		return false;
@@ -71,7 +73,7 @@ public class VoteService implements IVoteService {
 	@Override
 	public Vote update(final long id, final Vote vote) {
 		Vote currentVote = voteRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Vote not found"));
+				.orElseThrow(() -> new AppException("Vote not found", HttpStatus.NOT_FOUND));
 		
 		currentVote.setOptionAnswer(vote.isOptionAnswer());
 		

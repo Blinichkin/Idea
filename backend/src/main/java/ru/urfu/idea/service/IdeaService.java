@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.*;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IIdeaRepository;
 import ru.urfu.idea.repository.IIdeaStatusRepository;
 
@@ -19,7 +21,7 @@ public class IdeaService implements IIdeaService {
 	@Override
 	public Idea create(final Idea idea) {
 		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.NEW.getName())
-				.orElseThrow(() -> new RuntimeException("Status not found"));
+				.orElseThrow(() -> new AppException("Status not found", HttpStatus.NOT_FOUND));
 		
 		Idea newIdea = new Idea();
 		newIdea.setName(idea.getName());
@@ -36,7 +38,7 @@ public class IdeaService implements IIdeaService {
 	@Override
 	public Idea update(final long id, final Idea idea) {
 		Idea currentIdea = ideaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
 		
 		currentIdea.setName(idea.getName());
 		currentIdea.setText(idea.getText());

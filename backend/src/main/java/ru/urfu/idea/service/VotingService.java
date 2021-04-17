@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.*;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.*;
 
 import java.util.Collection;
@@ -21,13 +23,13 @@ public class VotingService implements IVotingService {
 	@Override
 	public Voting create(final long ideaId, final Voting voting) {
 		Idea idea = ideaRepository.findById(ideaId)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
 		
 		VotingStatus status = votingStatusRepository.findByName(VotingStatusEnum.ACTIVE.getName())
-				.orElseThrow(() -> new RuntimeException("Voting status not found"));
+				.orElseThrow(() -> new AppException("Voting status not found", HttpStatus.NOT_FOUND));
 		
 		VotingType type = votingTypeRepository.findByName(voting.getType().getName().getName())
-				.orElseThrow(() -> new RuntimeException("Voting type status not found"));
+				.orElseThrow(() -> new AppException("Voting type status not found", HttpStatus.NOT_FOUND));
 		
 		Voting newVoting = new Voting();
 		newVoting.setIdea(idea);
@@ -41,7 +43,7 @@ public class VotingService implements IVotingService {
 	@Override
 	public Voting update(final long id, final Voting voting) {
 		Voting currentVoting = votingRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Voting not found"));
+				.orElseThrow(() -> new AppException("Voting not found", HttpStatus.NOT_FOUND));
 		
 		currentVoting.setRequiredVotes(voting.getRequiredVotes());
 		currentVoting.setStatus(voting.getStatus());

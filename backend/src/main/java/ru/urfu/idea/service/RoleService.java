@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Role;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IRoleRepository;
 
 import java.util.Collection;
@@ -25,7 +27,7 @@ public class RoleService implements IRoleService {
 	@Override
 	public Role update(final long id, final Role role) {
 		Role currentRole = roleRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Role not found"));
+				.orElseThrow(() -> new AppException("Role not found", HttpStatus.NOT_FOUND));
 		
 		currentRole.setName(role.getName());
 		

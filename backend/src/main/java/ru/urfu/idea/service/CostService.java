@@ -2,9 +2,11 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Cost;
 import ru.urfu.idea.entity.CostType;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.ICostRepository;
 import ru.urfu.idea.repository.ICostTypeRepository;
 
@@ -20,7 +22,7 @@ public class CostService implements ICostService {
 	@Override
 	public Cost create(final Cost cost) {
 		CostType type = costTypeRepository.findByName(cost.getType().getName().getName())
-				.orElseThrow(() -> new RuntimeException("Cost type not found"));
+				.orElseThrow(() -> new AppException("Cost type not found", HttpStatus.NOT_FOUND));
 		
 		checkCost(type, cost);
 		Cost newCost = new Cost();
@@ -43,15 +45,15 @@ public class CostService implements ICostService {
 		switch (type.getName()) {
 			case EXACT:
 				if (cost.getValue() == null) {
-					throw new RuntimeException("Cost value not found");
+					throw new AppException("Cost value not found", HttpStatus.NOT_FOUND);
 				}
 				break;
 			case RANGE:
 				if (cost.getMinValue() == null) {
-					throw new RuntimeException("Cost minValue not found");
+					throw new AppException("Cost minValue not found", HttpStatus.NOT_FOUND);
 				}
 				if (cost.getMaxValue() == null) {
-					throw new RuntimeException("Cost maxValue not found");
+					throw new AppException("Cost maxValue not found", HttpStatus.NOT_FOUND);
 				}
 				break;
 		}
@@ -60,7 +62,7 @@ public class CostService implements ICostService {
 	@Override
 	public Cost update(final long id, final Cost cost) {
 		Cost currentCost = costRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Cost not found"));
+				.orElseThrow(() -> new AppException("Cost not found", HttpStatus.NOT_FOUND));
 		
 		currentCost.setType(cost.getType());
 		switch (cost.getType().getName()) {
@@ -80,7 +82,7 @@ public class CostService implements ICostService {
 				currentCost.setMaxValue(cost.getMaxValue());
 				break;
 			default:
-				throw new RuntimeException("Cost type not found");
+				throw new AppException("Cost type not found", HttpStatus.NOT_FOUND);
 		}
 		
 		return costRepository.saveAndFlush(currentCost);

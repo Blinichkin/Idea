@@ -2,8 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.VotingStatus;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IVotingStatusRepository;
 
 import java.util.Collection;
@@ -22,7 +24,7 @@ public class VotingStatusService implements IVotingStatusService {
 	@Override
 	public VotingStatus update(final long id, final VotingStatus votingStatus) {
 		VotingStatus currentStatus = statusRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Voting status not found"));
+				.orElseThrow(() -> new AppException("Voting status not found", HttpStatus.NOT_FOUND));
 		
 		currentStatus.setName(votingStatus.getName());
 		

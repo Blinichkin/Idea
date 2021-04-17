@@ -2,11 +2,13 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.Role;
 import ru.urfu.idea.entity.RoleEnum;
 import ru.urfu.idea.entity.User;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.mapper.request.UserProfileRequest;
 import ru.urfu.idea.repository.IRoleRepository;
 import ru.urfu.idea.repository.IUserRepository;
@@ -25,7 +27,7 @@ public class UserService implements IUserService {
 	@Override
 	public User create(final User user) {
 		if (findByLogin(user.getLogin()) != null) {
-			throw new RuntimeException("Login already exists");
+			throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
 		}
 		
 		User newUser = new User();
@@ -42,12 +44,12 @@ public class UserService implements IUserService {
 	private Collection<Role> createRoles(final User user) {
 		Collection<Role> roles = new ArrayList<>();
 		Role roleUser = roleRepository.findByName(RoleEnum.USER.getName())
-				.orElseThrow(() -> new RuntimeException("Role not found"));
+				.orElseThrow(() -> new AppException("Role not found", HttpStatus.NOT_FOUND));
 		roles.add(roleUser);
 		
 		if (user.getLogin().equals("admin")) {
 			Role roleAdmin = roleRepository.findByName(RoleEnum.ADMIN.getName())
-					.orElseThrow(() -> new RuntimeException("Role not found"));
+					.orElseThrow(() -> new AppException("Role not found", HttpStatus.NOT_FOUND));
 			roles.add(roleAdmin);
 		}
 		
@@ -57,7 +59,7 @@ public class UserService implements IUserService {
 	@Override
 	public User update(final long id, final UserProfileRequest user) {
 		User currentUser = userRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+				.orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 		
 		currentUser.setFirstName(user.getFirstName());
 		currentUser.setLastName(user.getLastName());

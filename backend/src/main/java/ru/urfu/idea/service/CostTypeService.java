@@ -2,9 +2,10 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.urfu.idea.entity.CostType;
-import ru.urfu.idea.entity.IdeaStatus;
+import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.ICostTypeRepository;
 
 import java.util.Collection;
@@ -25,7 +26,8 @@ public class CostTypeService implements ICostTypeService {
 	
 	@Override
 	public CostType update(final long id, final CostType type) {
-		CostType currentType = findById(id);
+		CostType currentType = typeRepository.findById(id)
+				.orElseThrow(() -> new AppException("Cost type not found", HttpStatus.NOT_FOUND));
 		currentType.setName(type.getName());
 		
 		return typeRepository.saveAndFlush(currentType);
