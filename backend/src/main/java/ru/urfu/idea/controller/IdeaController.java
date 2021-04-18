@@ -55,7 +55,7 @@ public class IdeaController {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MODER') || (hasAuthority('USER') && #id == #userPrincipal.id)")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MODER') || (hasAuthority('USER') && #id == #userPrincipal.id)")
 	public ResponseEntity<IdeaResponse> update(@AuthenticationPrincipal UserPrincipal userPrincipal,
 											   @PathVariable("id") final long id,
 											   @RequestBody @Validated final IdeaRequest ideaRequest) {
@@ -99,7 +99,37 @@ public class IdeaController {
 	}
 	
 	@PutMapping("/{id}/submit")
-	public ResponseEntity<IdeaResponse> submit(@PathVariable("id") final long id) {
+	@PreAuthorize("hasAuthority('ADMIN') || (hasAuthority('USER') && #id == #userPrincipal.id)")
+	public ResponseEntity<IdeaResponse> submit(@AuthenticationPrincipal UserPrincipal userPrincipal,
+											   @PathVariable("id") final long id) {
+		Idea idea = ideaService.submit(id);
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
+		
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}/cancel")
+	@PreAuthorize("hasAuthority('ADMIN') || (hasAuthority('USER') && #id == #userPrincipal.id)")
+	public ResponseEntity<IdeaResponse> cancel(@AuthenticationPrincipal UserPrincipal userPrincipal,
+											   @PathVariable("id") final long id) {
+		Idea idea = ideaService.submit(id);
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
+		
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}/reject")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MODER')")
+	public ResponseEntity<IdeaResponse> reject(@PathVariable("id") final long id) {
+		Idea idea = ideaService.submit(id);
+		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
+		
+		return new ResponseEntity<>(ideaResponse, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}/complete")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MODER')")
+	public ResponseEntity<IdeaResponse> complete(@PathVariable("id") final long id) {
 		Idea idea = ideaService.submit(id);
 		IdeaResponse ideaResponse = ideaMapper.modelToResponse(idea);
 		

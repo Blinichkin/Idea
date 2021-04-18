@@ -18,6 +18,12 @@ public interface IIdeaService {
 	
 	Idea submit(long id);
 	
+	Idea cancel(long id);
+	
+	Idea reject(long id);
+	
+	Idea complete(long id);
+	
 	Collection<Idea> findAllByStatusName(String name);
 
 }

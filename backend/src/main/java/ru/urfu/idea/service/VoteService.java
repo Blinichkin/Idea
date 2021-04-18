@@ -9,6 +9,7 @@ import ru.urfu.idea.exception.AppException;
 import ru.urfu.idea.repository.IUserRepository;
 import ru.urfu.idea.repository.IVoteRepository;
 import ru.urfu.idea.repository.IVotingRepository;
+import ru.urfu.idea.repository.IVotingStatusRepository;
 
 import java.util.Collection;
 
@@ -18,6 +19,7 @@ public class VoteService implements IVoteService {
 	
 	private final IVoteRepository voteRepository;
 	private final IVotingRepository votingRepository;
+	private final IVotingStatusRepository votingStatusRepository;
 	private final IUserRepository userRepository;
 	
 	@Override
@@ -29,6 +31,13 @@ public class VoteService implements IVoteService {
 		
 		if (!checkAccess(user, voting.getType())) {
 			throw new AppException("Inappropriate role", HttpStatus.BAD_REQUEST);
+		}
+		
+		if ((voteRepository.getVotesFor(votingId) - voteRepository.getVotesAgainst(votingId)
+				+ (vote.isOptionAnswer() ? 1 : 0)) >= voting.getRequiredVotes()) {
+			VotingStatus status = votingStatusRepository.findByName(VotingStatusEnum.COMPLETED.getName())
+					.orElseThrow(() -> new AppException("Voting status not found", HttpStatus.NOT_FOUND));
+			voting.setStatus(status);
 		}
 		
 		if (voting.getStatus().getName() == VotingStatusEnum.COMPLETED) {

@@ -21,7 +21,7 @@ public class IdeaService implements IIdeaService {
 	@Override
 	public Idea create(final Idea idea) {
 		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.NEW.getName())
-				.orElseThrow(() -> new AppException("Status not found", HttpStatus.NOT_FOUND));
+				.orElseThrow(() -> new AppException("Idea status not found", HttpStatus.NOT_FOUND));
 		
 		Idea newIdea = new Idea();
 		newIdea.setName(idea.getName());
@@ -73,9 +73,62 @@ public class IdeaService implements IIdeaService {
 	@Override
 	public Idea submit(final long id) {
 		Idea currentIdea = ideaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Idea not found"));
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
 		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.MODERATION.getName())
-				.orElseThrow(() -> new RuntimeException("Status not found"));
+				.orElseThrow(() -> new AppException("Idea status not found", HttpStatus.NOT_FOUND));
+		
+		if (!(currentIdea.getStatus().getName() == IdeaStatusEnum.NEW ||
+				currentIdea.getStatus().getName() == IdeaStatusEnum.REJECTED)) {
+			throw new AppException("Unsuitable idea status", HttpStatus.BAD_REQUEST);
+		}
+		
+		currentIdea.setStatus(status);
+		
+		return ideaRepository.saveAndFlush(currentIdea);
+	}
+	
+	@Override
+	public Idea cancel(final long id) {
+		Idea currentIdea = ideaRepository.findById(id)
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
+		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.NEW.getName())
+				.orElseThrow(() -> new AppException("Idea status not found", HttpStatus.NOT_FOUND));
+		
+		if (currentIdea.getStatus().getName() != IdeaStatusEnum.MODERATION) {
+			throw new AppException("Unsuitable idea status", HttpStatus.BAD_REQUEST);
+		}
+		
+		currentIdea.setStatus(status);
+		
+		return ideaRepository.saveAndFlush(currentIdea);
+	}
+	
+	@Override
+	public Idea reject(final long id) {
+		Idea currentIdea = ideaRepository.findById(id)
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
+		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.REJECTED.getName())
+				.orElseThrow(() -> new AppException("Idea status not found", HttpStatus.NOT_FOUND));
+		
+		if (currentIdea.getStatus().getName() != IdeaStatusEnum.MODERATION) {
+			throw new AppException("Unsuitable idea status", HttpStatus.BAD_REQUEST);
+		}
+		
+		currentIdea.setStatus(status);
+		
+		return ideaRepository.saveAndFlush(currentIdea);
+	}
+	
+	@Override
+	public Idea complete(final long id) {
+		Idea currentIdea = ideaRepository.findById(id)
+				.orElseThrow(() -> new AppException("Idea not found", HttpStatus.NOT_FOUND));
+		IdeaStatus status = statusRepository.findByName(IdeaStatusEnum.COMPLETED.getName())
+				.orElseThrow(() -> new AppException("Idea status not found", HttpStatus.NOT_FOUND));
+		
+		if (currentIdea.getStatus().getName() != IdeaStatusEnum.IN_WORK) {
+			throw new AppException("Unsuitable idea status", HttpStatus.BAD_REQUEST);
+		}
 		
 		currentIdea.setStatus(status);
 		
@@ -85,7 +138,7 @@ public class IdeaService implements IIdeaService {
 	@Override
 	public Collection<Idea> findAllByStatusName(String name) {
 		IdeaStatus status = statusRepository.findByName(name)
-				.orElseThrow(() -> new RuntimeException("Status not found"));
+				.orElseThrow(() -> new AppException("Status not found", HttpStatus.NOT_FOUND));
 		
 		return ideaRepository.findAllByStatus(status.getId());
 	}
