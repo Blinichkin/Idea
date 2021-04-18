@@ -2,6 +2,7 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class UserService implements IUserService {
 	private final PasswordEncoder passwordEncoder;
 	private final IUserRepository userRepository;
 	private final IRoleRepository roleRepository;
+	
+	@Value("${project.admin.login}")
+	private String login;
 	
 	@Override
 	public User create(final User user) {
@@ -47,7 +51,7 @@ public class UserService implements IUserService {
 				.orElseThrow(() -> new AppException("Role not found", HttpStatus.NOT_FOUND));
 		roles.add(roleUser);
 		
-		if (user.getLogin().equals("admin")) {
+		if (user.getLogin().equals(login)) {
 			Role roleAdmin = roleRepository.findByName(RoleEnum.ADMIN.getName())
 					.orElseThrow(() -> new AppException("Role not found", HttpStatus.NOT_FOUND));
 			roles.add(roleAdmin);

@@ -2,11 +2,11 @@ package ru.urfu.idea.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import ru.urfu.idea.entity.Attachment;
 import ru.urfu.idea.repository.IAttachmentRepository;
 
@@ -22,12 +22,15 @@ public class AttachmentService implements IAttachmentService {
 	
 	private final IAttachmentRepository attachmentRepository;
 	
+	@Value("${project.upload.path}")
+	private String uploadPath;
+	
 	@Override
 	public Attachment create(final MultipartFile file) {
 		String filename = UUID.randomUUID() + "." + file.getOriginalFilename();
 		
-		checkDirectories("files");
-		createFile(file, "files" + "/" + filename);
+		checkDirectories(uploadPath);
+		createFile(file, uploadPath + "/" + filename);
 		
 		Attachment attachment = new Attachment();
 		attachment.setName(filename);
@@ -51,7 +54,7 @@ public class AttachmentService implements IAttachmentService {
 		Attachment attachment = attachmentRepository.findById(id).orElse(null);
 		if (attachment != null) {
 			attachmentRepository.deleteById(id);
-			deleteFile("files" + "/" + attachment.getName());
+			deleteFile(uploadPath + "/" + attachment.getName());
 		}
 		
 		return attachment;
@@ -64,7 +67,7 @@ public class AttachmentService implements IAttachmentService {
 			return null;
 		}
 		
-		return openFile("files" + "/" + attachment.getName());
+		return openFile(uploadPath + "/" + attachment.getName());
 	}
 	
 	private static void checkDirectories(final String name) {
