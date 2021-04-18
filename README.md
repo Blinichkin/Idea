@@ -29,4 +29,4 @@ https://idea777.herokuapp.com/
 https://idea777.herokuapp.com/swagger-ui/
 
 ## Концептуальная модель
-![alt text](docs/Concept model.png)
+![alt text](docs/Concept%20model.png)
